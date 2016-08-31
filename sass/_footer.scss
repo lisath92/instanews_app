@@ -1,0 +1,22 @@
+
+/***Footer***/
+footer{
+    height: auto;
+    text-align: center;
+    height: 10vh;
+
+    @include desktop {
+      text-align: left;
+      padding-left: 25px;
+    }
+}
+
+.copyright{
+    color: #c2c2c2;
+    font-size: 0.8rem;
+
+}
+
+.instanews{
+    text-transform: uppercase;
+}

@@ -1,0 +1,26 @@
+$mobile-width: 480px;
+$tablet-width: 600px;
+$desktop-width: 1000px;
+
+@mixin mobile {
+  @media (min-width: #{$mobile-width}){
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media (min-width: #{$tablet-width}){
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media (min-width: #{$desktop-width}) {
+    @content;
+  }
+}
+
+@mixin flex-display($justify){
+  display: flex;
+  justify-content: $justify;
+}

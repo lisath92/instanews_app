@@ -1,18 +1,16 @@
 $(document).ready(function(event){
 //declare all the variables
-  var url, articleType, 
-  articleList, articleItem, 
-  articleImage, articleImageUrl, counter,
-  loading;
+  var url, articleType, articleList, articleItem, 
+  articleImage, articleImageUrl, counter, loading;
 
 //Calling the onChange function for the heapbox
   $('#category').heapbox({
     "onChange":function(){
       var articleType = $('select option:selected').val();
       var url = "https://api.nytimes.com/svc/topstories/v2/";
-      url += articleType+'.json?api-key=a8c466763f35441b8c84d662827a1c5f';
+      url += articleType+'.json?api-key=c52edcbe141b4c76aad4452c3f8fb686';
 
-      loading ='images/ajax-loader.gif';
+      loading ='../../assets/images/ajax-loader.gif';
 
 //Preparing the website to load the articles
       $('.article-list').empty();
@@ -25,7 +23,7 @@ $(document).ready(function(event){
         method: 'GET',
         dataType: 'json'
       }) //Accessing NYT API Key
-      .done(function(article) {
+      .done( function(article) {
 
         articleList = article.results;
 
@@ -35,7 +33,7 @@ $(document).ready(function(event){
           articleItem="";
           articleImageUrl = "";
           articleImage="";
-          counter=0;
+          counter=0
 
 //Entering each loop over the articles array
           $.each(articleList, function(index, item){ 
@@ -51,7 +49,7 @@ $(document).ready(function(event){
               if (counter===12) {
                 return false;
               } //Closing the counter to keep articles to 12
-            } //Closing the for each loop 
+            } //  Closing the for each loop 
           }); //Closing array checking if function
           $('.article-list').append(articleItem);
         } else { 

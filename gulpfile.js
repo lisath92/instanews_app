@@ -1,49 +1,79 @@
-var gulp = require('gulp'), // Load Gulp!
-// Now that we've installed the uglify package we can require it:
-    uglify = require('gulp-uglify'),
-    rename = require('gulp-rename'),
-    // input = ['build/style.scss'],
-    // output = ['build/style.min.css'],
-    browserSync = require('browser-sync').create(),
+// make Browersync work with old version of Node
+require('es6-promise').polyfill();
+
+var gulp = require('gulp'),
+    plumber = require('gulp-plumber'),
+    notify = require('gulp-notify'),
     sass = require('gulp-sass'),
     autoprefixer = require('gulp-autoprefixer'),
-    cssnano = require('gulp-cssnano');
+    rename = require('gulp-rename'),
+    cssnano = require('gulp-cssnano'),
+    uglify = require('gulp-uglify'),
+    jscs = require('gulp-jscs'),
+    jshint = require('gulp-jshint'),
+    stylish = require('jshint-stylish'),
+    browserSync = require('browser-sync');
 
+var plumberErrorHandler = {
+   errorHandler: notify.onError({
+      title: 'Gulp',
+      message: 'Error: <%= error.message %>'
+   })
+};
 
 gulp.task('sass', function() {
-   gulp.src('build/*.scss')
+   gulp.src('./sass/style.scss')
+      .pipe(plumber(plumberErrorHandler))
       .pipe(sass())
       .pipe(autoprefixer({
          browsers: ['last 2 versions']
       }))
-      .pipe(gulp.dest('build'))
+      .pipe(gulp.dest('./'))
       .pipe(cssnano())
       .pipe(rename('style.min.css'))
-      .pipe(gulp.dest('build'));
+      .pipe(gulp.dest('./build/css'));
 });
 
-// Static server
-gulp.task('browser', ['sass'], function() {
-    browserSync.init({
+gulp.task('scripts', function(){
+    gulp.src('./js/*.js')
+      .pipe(uglify())
+      .pipe(rename({
+        extname: '.min.js'
+      }))
+      .pipe(gulp.dest('./build/js'))
+});
+
+gulp.task('jscs', function () {
+   return gulp.src('./js/*.js')
+       .pipe(jscs('.jscsrc'));
+});
+
+gulp.task('lint', function() {
+  return gulp.src('./js/*.js')
+    .pipe(jshint())
+    .pipe(jshint.reporter(stylish));
+});
+
+gulp.task('browser-sync', function() {
+   var files = [
+      './build/css/*.css',
+      './build/js/*.js',
+      './*.html',
+      './**/*.php',
+   ];
+
+    browserSync.init(files, {
         server: {
-            baseDir: "app"
+          baseDir: "./"
         }
     });
 
-    gulp.watch("app/*.scss", ['sass']);
-    gulp.watch("app/*.html").on('change', browserSync.reload);
+    gulp.watch(files).on('change', browserSync.reload);
 });
 
-gulp.task('compress', function(){
-    gulp.src('build/*.js') // What files do we want gulp to consume?
-      .pipe(uglify()) // Call the uglify function on these files
-      .pipe(rename({ extname: '.min.js' })) //  Rename the uglified file
-      .pipe(gulp.dest('build')) // Where do we put the result?
+gulp.task('watch', function() {
+   gulp.watch('./sass/*.scss', ['sass']);
+   gulp.watch('./js/*.js', ['scripts']);
 });
 
-gulp.task('watch-sass', function() {
-   gulp.watch('build/*.scss', ['sass']);
-});
-
-gulp.task('default', ['sass', 'browser']);
-
+gulp.task('default', ['watch', 'browser-sync']);
