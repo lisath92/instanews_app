@@ -10,7 +10,7 @@ $(document).ready(function(event){
       var url = "https://api.nytimes.com/svc/topstories/v2/";
       url += articleType+'.json?api-key=c52edcbe141b4c76aad4452c3f8fb686';
 
-      loading ='../../assets/images/ajax-loader.gif';
+      loading ='assets/images/ajax-loader.gif';
 
 //Preparing the website to load the articles
       $('.article-list').empty();
